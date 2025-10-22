@@ -12,6 +12,11 @@ public abstract class Empleado {
     // Abstracción: Método 'abstract' que OBLIGA a las subclases a implementarlo.
     public abstract double calcularSalario();
 
+    // NUEVO MÉTODO CON PARÁMETRO: Simula el registro de horas extras con un bono.
+    public String registrarHorasExtra(int horas) { // El parámetro es 'horas'
+        return "El empleado " + getNombre() + " registró " + horas + " horas extra.";
+    }
+
     // Getters y Setters (Acceso controlado a los atributos privados - Encapsulamiento)
     public String getNombre() {
         return nombre;
