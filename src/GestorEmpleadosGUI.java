@@ -1,122 +1,93 @@
 // Archivo: GestorEmpleadosGUI.java
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.FlowLayout; // Usaremos un layout simple para no complicarnos
 
-public class GestorEmpleadosGUI extends JFrame implements ActionListener {
+public class GestorEmpleadosGUI extends JFrame { // Ya no implementamos ActionListener
 
-    // ... (atributos existentes) ...
+    // Atributos de la clase GUI
     private JTextArea areaSalida;
-    private JButton botonListar, botonHorasExtra;
-    private Empleado[] personal;
+    private JButton botonListar;
+    private JButton botonHorasExtra;
+    private Empleado[] personal; // El arreglo de Objetos
 
-    // Constructor de la clase GUI
+    // Constructor
     public GestorEmpleadosGUI(Empleado[] personal) {
+        // 1. Creación de Objetos (Ventana)
+        super("Gestión de Empleados Simple POO"); // Llama al constructor de JFrame
         this.personal = personal;
 
-        // Configuración básica de la ventana
-        setTitle("Gestión de Empleados POO");
-        setSize(500, 400);
+        // Configuración básica
+        setSize(550, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new FlowLayout()); // Layout simple, uno al lado del otro
 
-        // Creación y configuración de Componentes
-        areaSalida = new JTextArea();
+        // 2. Creación de Objetos (Componentes)
+        areaSalida = new JTextArea(15, 45); // 15 filas, 45 columnas
         areaSalida.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(areaSalida);
-        add(scrollPane, BorderLayout.CENTER);
 
-        // Panel para los botones
-        JPanel panelBotones = new JPanel();
-        panelBotones.setLayout(new FlowLayout());
+        botonListar = new JButton("1. Mostrar Salarios (Polimorfismo)");
+        botonHorasExtra = new JButton("2. Registrar Horas Extra (Parámetro)");
 
-        // Creación de Objetos JButton y sus Atributos
-        // Renombramos el botón para que sea más claro lo que hace
-        botonListar = new JButton("1. Mostrar Salarios Calculados");
-        botonHorasExtra = new JButton("2. Registrar Horas Extra (Método con Parámetro)");
+        // Agregamos los componentes a la ventana
+        add(scrollPane);
+        add(botonListar);
+        add(botonHorasExtra);
 
-        // Conexión de los Métodos (Action Listeners)
-        botonListar.addActionListener(this);
-        botonHorasExtra.addActionListener(this);
-
-        panelBotones.add(botonListar);
-        panelBotones.add(botonHorasExtra);
-
-        add(panelBotones, BorderLayout.SOUTH);
-
-        // ¡NUEVO PASO CLAVE! Llamamos al método de inicialización aquí.
+        // Inicializamos la salida al crear el Objeto GUI
         inicializarSalida();
 
-        setVisible(true);
-    }
-    private void registrarHorasExtraDemo() {
-        areaSalida.setText("");
+        // 3. Llamada a Métodos: Conexión de Eventos
 
-        // Llamada a un Método con Parámetro: personal[0] llama a su Método.
-        String resultado1 = personal[0].registrarHorasExtra(10); // 10 es el PARÁMETRO
+        // Opción 1: Listar Salarios
+        // Usamos una clase anónima, que es una forma simple de manejar eventos.
+        botonListar.addActionListener(e -> {
+            listarEmpleadosConSalarios(); // Llama al método
+        });
 
-        // Llamada a otro Objeto: personal[1] llama a su Método.
-        String resultado2 = personal[1].registrarHorasExtra(5); // 5 es el PARÁMETRO
+        // Opción 2: Horas Extra
+        botonHorasExtra.addActionListener(e -> {
+            registrarHorasExtraDemo(); // Llama al método
+        });
 
-        areaSalida.append("--- Demostración de Llamada a Método con Parámetro ---\n");
-        areaSalida.append(resultado1 + "\n");
-        areaSalida.append(resultado2 + "\n");
-    }
-
-    // Método principal que maneja los eventos de los botones
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == botonListar) {
-            // Llamamos al nuevo método para calcular y listar salarios.
-            listarEmpleadosConSalarios();
-        } else if (e.getSource() == botonHorasExtra) {
-            registrarHorasExtraDemo();
-        }
+        setVisible(true); // Mostrar la ventana
     }
 
-    // NUEVO MÉTODO: Muestra una lista simple de empleados (sin salarios) al inicio.
+    // Método 1: Inicializa la lista simple de empleados al inicio.
     private void inicializarSalida() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("--- EMPLEADOS CARGADOS EN EL SISTEMA ---\n");
-        sb.append("--------------------------------------\n");
-
+        String salida = "--- EMPLEADOS CARGADOS ---\n";
         for (Empleado emp : personal) {
-            sb.append("ID: ").append(emp.getId())
-                    .append(", Nombre: ").append(emp.getNombre()).append("\n");
+            // Llamada al método getNombre() del Objeto
+            salida += "ID: " + emp.getId() + ", Nombre: " + emp.getNombre() + "\n";
         }
-        sb.append("\n**Pulsa 'Mostrar Salarios Calculados' para ver los montos.**");
-
-        areaSalida.setText(sb.toString());
+        salida += "\n**Pulsa 'Mostrar Salarios' para ver los montos.**";
+        areaSalida.setText(salida);
     }
 
-    // MÉTODO MODIFICADO: Ahora muestra los salarios al hacer click.
+    // Método 2: Muestra los salarios (Demuestra Polimorfismo)
     private void listarEmpleadosConSalarios() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("--- LISTADO DE EMPLEADOS Y SALARIOS CALCULADOS ---\n");
-        sb.append("------------------------------------------------\n");
+        String salida = "--- SALARIOS CALCULADOS ---\n";
 
         for (Empleado emp : personal) {
-            // Se realiza la llamada polimórfica para calcular el salario
+            // Polimorfismo: Llamada al método, cada objeto ejecuta su propia versión.
             double salario = emp.calcularSalario();
 
-            sb.append("ID: ").append(emp.getId())
-                    .append(", Nombre: ").append(emp.getNombre());
-
-            // Usamos 'instanceof' para indicar el tipo (Polimorfismo)
-            if (emp instanceof EmpleadoAsalariado) {
-                sb.append(" (Asalariado)");
-            } else if (emp instanceof EmpleadoPorHoras) {
-                sb.append(" (Por Horas)");
-            }
-
-            sb.append("\n  Salario Calculado: $").append(String.format("%.2f", salario)).append("\n");
-            sb.append("------------------------------------------------\n");
+            salida += emp.getNombre() + ": $" + String.format("%.2f", salario) + "\n";
         }
-
-        areaSalida.setText(sb.toString());
+        areaSalida.setText(salida);
     }
 
-    // ... (El método registrarHorasExtraDemo() permanece igual) ...
+    // Método 3: Demuestra la Llamada de Método con Parámetro
+    private void registrarHorasExtraDemo() {
+        areaSalida.setText("--- Registro de Horas Extra ---\n");
+
+        // Llamada a Método con Parámetro: personal[0] llama a su método.
+        String resultado1 = personal[0].registrarHorasExtra(10); // 10 es el PARÁMETRO
+        areaSalida.append(resultado1 + "\n");
+
+        // Llamada a otro Objeto.
+        String resultado2 = personal[1].registrarHorasExtra(5); // 5 es el PARÁMETRO
+        areaSalida.append(resultado2 + "\n");
+    }
 }
