@@ -9,13 +9,11 @@ public class EmpleadoAsalariado extends Empleado {
     }
 
     // Polimorfismo: Sobreescribe el método abstracto de la clase Empleado.
-    @Override
     public double calcularSalario() {
         return salarioMensual;
     }
 
     // Se puede sobreescribir otro método (Polimorfismo)
-    @Override
     public void mostrarDatos() {
         super.mostrarDatos(); // Llama al método de la clase base primero
         System.out.println("  Tipo: Asalariado, Salario Mensual: $" + salarioMensual);
